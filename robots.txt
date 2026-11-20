@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://tiendadonaloly.github.io/tienda-dona-loly/sitemap.xml
