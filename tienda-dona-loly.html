@@ -664,9 +664,9 @@
             </div>
           </div>
           <div class="field" id="changeField" style="display:none;">
-            <label for="fChange">¿Cuánto vuelto necesitas? (opcional)</label>
-            <input id="fChange" type="number" inputmode="numeric" min="0" step="1" placeholder="Ej. 100" />
-            <p class="hint">Si necesitas vuelto, escribe cuánto (en CUP) para llevarlo listo con tu pedido y no dar dos vueltas. Si pagas exacto, déjalo vacío.</p>
+            <label for="fChange">¿Cuánto vuelto necesitas? *</label>
+            <input id="fChange" type="number" inputmode="numeric" min="0" step="1" placeholder="Ej. 100 (o 0 si pagas exacto)" />
+            <p class="hint">Campo obligatorio: escribe cuánto vuelto necesitas (en CUP) para llevarlo listo con tu pedido y no dar dos vueltas. Si pagas exacto, escribe 0.</p>
           </div>
           <div class="field">
             <label for="fNote">Nota (opcional)</label>
@@ -1136,9 +1136,10 @@
         var showChange = delivery === "Entrega a domicilio" && payment === "Efectivo";
         var changeRaw = showChange ? document.getElementById("fChange").value.trim() : "";
         var changeVal = 0;
+        if (showChange && changeRaw === "") { showError("Falta el vuelto: indica cuánto vuelto necesitas para llevarlo listo con tu pedido. Si pagas exacto, escribe 0."); return; }
         if (changeRaw !== "") {
           changeVal = Number(changeRaw);
-          if (!isFinite(changeVal) || changeVal <= 0) { showError("El vuelto debe ser un monto en CUP mayor que cero. Si pagas exacto, deja la casilla vacía."); return; }
+          if (!isFinite(changeVal) || changeVal < 0) { showError("El vuelto debe ser un monto en CUP de cero o más. Si pagas exacto, escribe 0."); return; }
           changeVal = Math.round(changeVal);
         }
 
@@ -1157,7 +1158,7 @@
         lines.push("*Entrega:* " + delivery + (delivery === "Entrega a domicilio" ? " — " + zone : ""));
         if (delivery === "Entrega a domicilio") lines.push("*Dirección:* " + address);
         lines.push("*Pago:* " + payment + (payment === "Zelle" ? " (al " + ZELLE + ", con 5% de comisión)" : " al recibir"));
-        if (changeVal > 0) lines.push("*Vuelto:* " + money(changeVal));
+        if (showChange) lines.push("*Vuelto:* " + (changeVal > 0 ? money(changeVal) : "0 CUP (paga exacto)"));
         lines.push("");
         lines.push("*Pedido:*");
         Object.keys(cart).forEach(function (id) {
