@@ -442,6 +442,7 @@
       }
       .zelle-box.show { display: block; }
       .zelle-box .num { font-size: 18px; font-weight: 800; letter-spacing: .3px; }
+      .field .hint { font-size: 13px; color: var(--ink-soft); margin: 6px 0 0; line-height: 1.45; }
       .copy-btn {
         margin-left: 8px; border: 1px solid var(--green); background: transparent; color: var(--green);
         border-radius: 8px; padding: 6px 12px; font-weight: 700; min-height: 36px;
@@ -661,6 +662,11 @@
               <div style="margin-top:6px;"><b>Ojo:</b> el pago por Zelle lleva un <b>5% de comisión</b>, porque al enviar el dinero a Cuba cobran esa comisión. El total del pedido ya la incluye y la verás desglosada en el resumen.</div>
               <div style="margin-top:6px;">Haz la transferencia y envía el pedido; la tienda confirma al recibir el pago.</div>
             </div>
+          </div>
+          <div class="field" id="changeField" style="display:none;">
+            <label for="fChange">¿Cuánto vuelto necesitas? (opcional)</label>
+            <input id="fChange" type="number" inputmode="numeric" min="0" step="1" placeholder="Ej. 100" />
+            <p class="hint">Si necesitas vuelto, escribe cuánto (en CUP) para llevarlo listo con tu pedido y no dar dos vueltas. Si pagas exacto, déjalo vacío.</p>
           </div>
           <div class="field">
             <label for="fNote">Nota (opcional)</label>
@@ -1077,7 +1083,16 @@
       var form = document.getElementById("orderForm");
       var addressField = document.getElementById("addressField");
       var zelleBox = document.getElementById("zelleBox");
+      var changeField = document.getElementById("changeField");
       var formError = document.getElementById("formError");
+
+      /* La casilla de vuelto solo aparece con entrega a domicilio y pago en efectivo */
+      function updateChangeField() {
+        var dSel = form.querySelector('input[name="delivery"]:checked');
+        var pSel = form.querySelector('input[name="payment"]:checked');
+        var show = !!(dSel && dSel.value === "Entrega a domicilio" && pSel && pSel.value === "Efectivo");
+        changeField.style.display = show ? "" : "none";
+      }
 
       form.addEventListener("change", function (e) {
         if (e.target.name === "delivery") {
@@ -1085,6 +1100,9 @@
         }
         if (e.target.name === "payment") {
           zelleBox.classList.toggle("show", e.target.value === "Zelle");
+        }
+        if (e.target.name === "delivery" || e.target.name === "payment") {
+          updateChangeField();
         }
         renderCart();
       });
@@ -1115,6 +1133,14 @@
         var address = document.getElementById("fAddress").value.trim();
         var payment = form.querySelector('input[name="payment"]:checked').value;
         var note = document.getElementById("fNote").value.trim();
+        var showChange = delivery === "Entrega a domicilio" && payment === "Efectivo";
+        var changeRaw = showChange ? document.getElementById("fChange").value.trim() : "";
+        var changeVal = 0;
+        if (changeRaw !== "") {
+          changeVal = Number(changeRaw);
+          if (!isFinite(changeVal) || changeVal <= 0) { showError("El vuelto debe ser un monto en CUP mayor que cero. Si pagas exacto, deja la casilla vacía."); return; }
+          changeVal = Math.round(changeVal);
+        }
 
         if (!t.count) { showError("Tu carrito está vacío. Añade al menos un producto antes de enviar el pedido."); return; }
         if (!name) { showError("Escribe tu nombre para que la tienda sepa quién hace el pedido."); return; }
@@ -1131,6 +1157,7 @@
         lines.push("*Entrega:* " + delivery + (delivery === "Entrega a domicilio" ? " — " + zone : ""));
         if (delivery === "Entrega a domicilio") lines.push("*Dirección:* " + address);
         lines.push("*Pago:* " + payment + (payment === "Zelle" ? " (al " + ZELLE + ", con 5% de comisión)" : " al recibir"));
+        if (changeVal > 0) lines.push("*Vuelto:* " + money(changeVal));
         lines.push("");
         lines.push("*Pedido:*");
         Object.keys(cart).forEach(function (id) {
