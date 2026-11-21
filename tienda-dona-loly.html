@@ -460,19 +460,6 @@
       .send-btn:active { background: var(--wa-dark); }
       .send-note { text-align: center; color: var(--ink-soft); font-size: 13px; margin: 10px 4px 0; }
       body.locked { overflow: hidden; }
-
-      /* ---------- Cajita de visitas (esquina inferior derecha) ---------- */
-      .visits-badge {
-        position: fixed; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom));
-        z-index: 34; background: var(--surface); color: var(--ink-soft);
-        border: 1px solid var(--line); border-radius: 999px;
-        padding: 5px 11px; font-size: 12.5px; font-weight: 600; line-height: 1.2;
-        box-shadow: 0 4px 14px rgba(34, 48, 31, .12); pointer-events: none;
-        transition: bottom .25s ease;
-      }
-      .visits-badge b { color: var(--ink); font-weight: 800; }
-      /* Cuando aparece la barra flotante del carrito, la cajita sube para no taparla */
-      .visits-badge.raised { bottom: calc(78px + env(safe-area-inset-bottom)); }
     </style>
   </head>
   <body>
@@ -1296,39 +1283,5 @@
 
       renderCart();
     </script>
-    <div class="visits-badge" id="visitsBadge" aria-hidden="true">Visitas: <b id="visitsCount">…</b></div>
-    <script>
-      (function () {
-        var badge = document.getElementById("visitsBadge");
-        var countEl = document.getElementById("visitsCount");
-        if (!badge || !countEl) return;
-        // Si aparece la barra flotante del carrito, la cajita sube para no taparla
-        var bar = document.getElementById("floatbar");
-        if (bar && "MutationObserver" in window) {
-          var sync = function () {
-            badge.classList.toggle("raised", bar.classList.contains("show"));
-          };
-          new MutationObserver(sync).observe(bar, { attributes: true, attributeFilter: ["class"] });
-          sync();
-        }
-        // Total de visitas desde GoatCounter; si falla, se queda en "…"
-        try {
-          fetch("https://tiendadonaloly.goatcounter.com/counter/TOTAL.json")
-            .then(function (r) {
-              if (!r.ok) throw new Error("respuesta no válida");
-              return r.json();
-            })
-            .then(function (data) {
-              if (data && data.count != null && data.count !== "") {
-                var n = Number(data.count);
-                if (!isNaN(n)) countEl.textContent = n.toLocaleString("es");
-              }
-            })
-            .catch(function () { /* sin conexión con el contador: se queda en "…" */ });
-        } catch (e) { /* se queda en "…" */ }
-      })();
-    </script>
-    <script data-goatcounter="https://tiendadonaloly.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
   </body>
 </html>
