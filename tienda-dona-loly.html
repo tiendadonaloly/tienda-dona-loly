@@ -461,10 +461,71 @@
       .send-btn:active { background: var(--wa-dark); }
       .send-note { text-align: center; color: var(--ink-soft); font-size: 13px; margin: 10px 4px 0; }
       body.locked { overflow: hidden; }
+
+      /* ---------- Navidad (temática temporal) ---------- */
+      .xmas {
+        position: relative; height: 40px; overflow: hidden;
+        pointer-events: none;
+      }
+      .xmas-wire { position: absolute; inset: 0; width: 100%; height: 100%; }
+      .xmas-wire path { stroke: #0a2417; stroke-width: 2; }
+      .xmas-bulb {
+        position: absolute; width: 12px; height: 12px; border-radius: 50%;
+        transform: translateX(-50%);
+        background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.75), rgba(255,255,255,0) 45%), var(--c);
+        box-shadow: 0 0 10px 2px var(--c);
+        animation: xmasGlow 5s ease-in-out infinite alternate;
+      }
+      .xmas-bulb::before {
+        content: ""; position: absolute; left: 50%; top: -5px;
+        width: 2px; height: 5px; background: #0a2417;
+        transform: translateX(-50%);
+      }
+      /* Destello rojo que recorre la guirnalda hacia la derecha, lento */
+      .xmas-bulb::after {
+        content: ""; position: absolute; inset: -4px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,92,72,.95) 0%, rgba(255,45,32,.55) 55%, rgba(255,45,32,0) 78%);
+        box-shadow: 0 0 16px 5px rgba(255,55,40,.55);
+        opacity: 0;
+        animation: xmasChase var(--cycle, 12s) linear infinite;
+        animation-delay: var(--cd, 0s);
+      }
+      @keyframes xmasGlow {
+        from { filter: brightness(.72); }
+        to   { filter: brightness(1.22); }
+      }
+      @keyframes xmasChase {
+        0%   { opacity: 0; }
+        5%   { opacity: .95; }
+        13%  { opacity: 0; }
+        100% { opacity: 0; }
+      }
+      .xmas-tree {
+        position: absolute; right: 10px; bottom: 1px;
+        height: 37px; width: auto;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .xmas-bulb, .xmas-bulb::after { animation: none; }
+      }
     </style>
   </head>
   <body>
     <header class="topbar">
+      <div class="xmas" id="xmasGarland" aria-hidden="true">
+        <svg class="xmas-wire" id="xmasWire" preserveAspectRatio="none" aria-hidden="true"><path id="xmasPath" fill="none" d=""/></svg>
+        <svg class="xmas-tree" viewBox="0 0 40 48" aria-hidden="true">
+          <polygon points="20,1 22.2,5.6 27,6.2 23.4,9.5 24.4,14.2 20,11.7 15.6,14.2 16.6,9.5 13,6.2 17.8,5.6" fill="#ffc93c"/>
+          <polygon points="20,9 29,22 11,22" fill="#2e7d46"/>
+          <polygon points="20,17 32,32 8,32" fill="#256b3a"/>
+          <polygon points="20,26 35,43 5,43" fill="#1d5730"/>
+          <rect x="17.5" y="43" width="5" height="5" fill="#7a4a21"/>
+          <circle cx="16" cy="27" r="1.7" fill="#ff5147"/>
+          <circle cx="24" cy="30" r="1.7" fill="#ffc93c"/>
+          <circle cx="18" cy="35" r="1.7" fill="#57b6ff"/>
+          <circle cx="26" cy="38" r="1.7" fill="#ff5147"/>
+          <circle cx="13" cy="38" r="1.7" fill="#ffc93c"/>
+        </svg>
+      </div>
       <div class="topbar-in">
         <div class="brand">
           <h1>Doña <span class="accent">Loly</span></h1>
@@ -1308,6 +1369,57 @@
             requestUserWeather();
           });
         }
+      })();
+
+      // ---------- Guirnalda de Navidad (temporal): luces con destello lento ----------
+      (function () {
+        var wrap = document.getElementById("xmasGarland");
+        if (!wrap) return;
+        var svg = document.getElementById("xmasWire");
+        var path = document.getElementById("xmasPath");
+        var COLORS = ["#ff5147", "#ffc93c", "#5ee08a", "#57b6ff"];
+        var STEP = 0.65; // segundos de un bombillo al siguiente: el destello avanza despacio
+        function build() {
+          var olds = wrap.querySelectorAll(".xmas-bulb");
+          for (var k = 0; k < olds.length; k++) olds[k].remove();
+          var W = wrap.clientWidth;
+          if (!W) return;
+          var H = 40, top = 3, sag = 15, S = 150;
+          var scallops = Math.ceil(W / S);
+          svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+          var d = "M 0 " + top;
+          for (var s = 0; s < scallops; s++) {
+            d += " Q " + (s * S + S / 2) + " " + (top + sag * 2) + " " + ((s + 1) * S) + " " + top;
+          }
+          path.setAttribute("d", d);
+          var bulbs = [];
+          for (var s2 = 0; s2 < scallops; s2++) {
+            [0.18, 0.5, 0.82].forEach(function (t) {
+              var x = s2 * S + t * S;
+              if (x > W - 48) return; // hueco para el arbolito de la esquina
+              var y = (1 - t) * (1 - t) * top + 2 * (1 - t) * t * (top + sag * 2) + t * t * top;
+              bulbs.push({ x: x, y: y });
+            });
+          }
+          var cycle = Math.max(bulbs.length * STEP, 4);
+          bulbs.forEach(function (b, i) {
+            var el = document.createElement("span");
+            el.className = "xmas-bulb";
+            el.style.left = b.x + "px";
+            el.style.top = (b.y - 1) + "px";
+            el.style.setProperty("--c", COLORS[i % COLORS.length]);
+            el.style.setProperty("--cycle", cycle + "s");
+            el.style.setProperty("--cd", (i * STEP - cycle) + "s");
+            el.style.animationDelay = (((i % 7) * -0.7)).toFixed(1) + "s";
+            wrap.appendChild(el);
+          });
+        }
+        build();
+        var rt;
+        window.addEventListener("resize", function () {
+          clearTimeout(rt);
+          rt = setTimeout(build, 200);
+        });
       })();
 
       renderCart();
