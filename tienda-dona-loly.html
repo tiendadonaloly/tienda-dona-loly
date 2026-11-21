@@ -123,7 +123,7 @@
       }
       .rate-val small { font-size: 13px; font-weight: 700; }
       .info-note { margin-top: 8px; font-size: 12.5px; color: var(--ink-soft); }
-      .info-note a { color: var(--green); font-weight: 700; }
+      .info-note a, .info-note .src-name { color: var(--green); font-weight: 700; }
       .weather-main { display: flex; align-items: center; gap: 14px; min-height: 46px; }
       .weather-icon { flex: none; display: inline-flex; color: var(--amber); }
       .weather-temp {
@@ -139,6 +139,8 @@
         display: inline-flex; align-items: center; gap: 3px; vertical-align: baseline;
       }
       .weather-locate-btn:active { opacity: .7; }
+      a.info-panel { display: block; color: inherit; text-decoration: none; cursor: pointer; }
+      .tap-hint { font-weight: 600; white-space: nowrap; }
 
       /* ---------- Hero ---------- */
       .hero { position: relative; max-height: 340px; overflow: hidden; }
@@ -490,16 +492,16 @@
 
     <div class="topinfo">
       <div class="topinfo-in">
-        <div class="info-panel">
+        <a class="info-panel" href="https://eltoque.com" target="_blank" rel="noopener" aria-label="Tasa de El Toque de hoy: abrir eltoque.com para ver más detalles">
           <div class="info-title">Tasa de El Toque · hoy</div>
           <div class="rates">
             <div class="rate"><span class="rate-cur">Dólar (USD)</span><span class="rate-val">950 <small>CUP</small></span></div>
             <div class="rate"><span class="rate-cur">Euro (EUR)</span><span class="rate-val">1.030 <small>CUP</small></span></div>
             <div class="rate"><span class="rate-cur">MLC</span><span class="rate-val">847 <small>CUP</small></span></div>
           </div>
-          <div class="info-note">Fuente: <a href="https://eltoque.com" target="_blank" rel="noopener">El Toque</a> · Actualizado al abrir la página</div>
-        </div>
-        <div class="info-panel">
+          <div class="info-note">Fuente: <span class="src-name">El Toque</span> · Actualizado al abrir la página · <span class="tap-hint">Toca para ver más</span></div>
+        </a>
+        <a class="info-panel" id="weatherPanel" href="https://weather.com/weather/today/l/23.16,-82.30" target="_blank" rel="noopener" aria-label="El tiempo ahora: abrir Weather.com para ver más detalles">
           <div class="info-title" id="weatherTitle">Cojímar ahora</div>
           <div class="weather-main">
             <span class="weather-icon" id="weatherIcon" aria-hidden="true"></span>
@@ -509,8 +511,8 @@
               <div class="weather-cloud" id="weatherCloud"></div>
             </div>
           </div>
-          <div class="info-note"><span id="weatherNote">El tiempo de Cojímar, en vivo al abrir la página.</span><button type="button" class="weather-locate-btn" id="weatherLocateBtn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Ver el tiempo de mi zona</button></div>
-        </div>
+          <div class="info-note"><span id="weatherNote">El tiempo de Cojímar, en vivo al abrir la página.</span><button type="button" class="weather-locate-btn" id="weatherLocateBtn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>Ver el tiempo de mi zona</button> · <span class="tap-hint">Toca para ver más</span></div>
+        </a>
       </div>
     </div>
 
@@ -1175,6 +1177,7 @@
         var titleEl = document.getElementById("weatherTitle");
         var noteEl = document.getElementById("weatherNote");
         var locateBtn = document.getElementById("weatherLocateBtn");
+        var panelEl = document.getElementById("weatherPanel");
         var COJIMAR = { lat: 23.167, lon: -82.308, label: "Cojímar" };
         var usingUserLocation = false;
         var SVG_OPEN = '<svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
@@ -1219,6 +1222,11 @@
         }
 
         function fetchWeather(lat, lon, label, isUser) {
+          // Con la ubicación del visitante, el cartel enlaza a Weather.com
+          // con las coordenadas de su zona (por defecto queda Cojímar)
+          if (isUser && panelEl) {
+            panelEl.href = "https://weather.com/weather/today/l/" + lat + "," + lon;
+          }
           try {
             var ctrl = ("AbortController" in window) ? new AbortController() : null;
             var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, 8000) : null;
@@ -1277,7 +1285,9 @@
 
         // 3) Botón por si el navegador pide un toque para dar el permiso
         if (locateBtn) {
-          locateBtn.addEventListener("click", function () {
+          locateBtn.addEventListener("click", function (ev) {
+            // El botón solo pide la ubicación: no debe abrir Weather.com
+            if (ev) { ev.preventDefault(); ev.stopPropagation(); }
             descEl.textContent = "Buscando tu ubicación…";
             requestUserWeather();
           });
