@@ -481,11 +481,12 @@
         width: 2px; height: 5px; background: #0a2417;
         transform: translateX(-50%);
       }
-      /* Destello rojo que recorre la guirnalda hacia la derecha, lento */
+      /* Destello que recorre la guirnalda hacia la derecha, lento,
+         pestañeando con los colores de Navidad de cada bombillo */
       .xmas-bulb::after {
         content: ""; position: absolute; inset: -4px; border-radius: 50%;
-        background: radial-gradient(circle, rgba(255,92,72,.95) 0%, rgba(255,45,32,.55) 55%, rgba(255,45,32,0) 78%);
-        box-shadow: 0 0 16px 5px rgba(255,55,40,.55);
+        background: radial-gradient(circle, color-mix(in srgb, var(--c) 90%, #fff) 0%, color-mix(in srgb, var(--c) 55%, transparent) 55%, transparent 78%);
+        box-shadow: 0 0 16px 5px color-mix(in srgb, var(--c) 55%, transparent);
         opacity: 0;
         animation: xmasChase var(--cycle, 12s) linear infinite;
         animation-delay: var(--cd, 0s);
@@ -1377,7 +1378,7 @@
         if (!wrap) return;
         var svg = document.getElementById("xmasWire");
         var path = document.getElementById("xmasPath");
-        var COLORS = ["#ff5147", "#ffc93c", "#5ee08a", "#57b6ff"];
+        var COLORS = ["#ff5147", "#5ee08a", "#ffc93c", "#57b6ff", "#ffffff"];
         var STEP = 0.65; // segundos de un bombillo al siguiente: el destello avanza despacio
         function build() {
           var olds = wrap.querySelectorAll(".xmas-bulb");
