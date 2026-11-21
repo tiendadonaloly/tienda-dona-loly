@@ -272,6 +272,29 @@
       .foot-in h3 { font-family: "Bitter", serif; margin: 0 0 8px; font-size: 24px; color: #fff; }
       .foot-in p { margin: 4px 0; font-size: 15px; }
       .foot-in a { color: #ffd98a; font-weight: 700; text-decoration: none; }
+      .foot-main { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; }
+      .foot-info { flex: 1 1 380px; min-width: 0; }
+      .qr-card {
+        flex: 0 0 216px; width: 216px;
+        background: #fff; color: #1c2b1a;
+        border-radius: 16px; padding: 16px 16px 14px;
+        text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,.22);
+      }
+      .qr-card img { width: 184px; height: 184px; margin: 0 auto; image-rendering: pixelated; }
+      .qr-card .qr-title { font-weight: 800; font-size: 16.5px; line-height: 1.25; margin: 10px 0 4px; color: #14402a; }
+      .qr-card .qr-sub { font-size: 13px; line-height: 1.4; color: #4a5a46; margin: 0; }
+      .qr-card .qr-url { font-size: 11px; line-height: 1.35; color: #6b7a66; margin: 8px 0 0; word-break: break-all; }
+      .qr-download {
+        display: inline-flex; align-items: center; justify-content: center;
+        margin-top: 12px; min-height: 40px; padding: 8px 14px;
+        background: #14402a; color: #fff !important; border-radius: 999px;
+        font-size: 13.5px; font-weight: 800;
+      }
+      @media (max-width: 640px) {
+        .foot-main { flex-direction: column; }
+        .qr-card { flex: none; width: 100%; max-width: 260px; margin: 4px auto 8px; }
+        .qr-card img { width: 200px; height: 200px; }
+      }
       .foot-links { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 20px; }
       .foot-links a {
         background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.3);
@@ -513,13 +536,24 @@
 
     <footer>
       <div class="foot-in">
-        <h3>Doña Loly</h3>
-        <p>Tu tienda del barrio en Cojímar, La Habana.</p>
-        <p>Pago en efectivo al recoger o recibir, o por Zelle al <b>+1 (702) 460-5048</b> (el pago por Zelle lleva un 5% de comisión).</p>
-        <p>Entrega a domicilio: Cojímar 200 CUP · Bahía, Camilo y Lamar 500 CUP.</p>
-        <div class="foot-links">
-          <a href="https://wa.me/5352783094" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
-          <a href="tel:+5352783094">Llamar: +53 5278 3094</a>
+        <div class="foot-main">
+          <div class="foot-info">
+            <h3>Doña Loly</h3>
+            <p>Tu tienda del barrio en Cojímar, La Habana.</p>
+            <p>Pago en efectivo al recoger o recibir, o por Zelle al <b>+1 (702) 460-5048</b> (el pago por Zelle lleva un 5% de comisión).</p>
+            <p>Entrega a domicilio: Cojímar 200 CUP · Bahía, Camilo y Alamar 500 CUP.</p>
+            <div class="foot-links">
+              <a href="https://wa.me/5352783094" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+              <a href="tel:+5352783094">Llamar: +53 5278 3094</a>
+            </div>
+          </div>
+          <div class="qr-card" id="qr">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAzQAAAM0AQAAAABFCVraAAAEr0lEQVR4nO3dQY7dIAyAYVPNntyg9z/W3ABO4C4CwRiYbtqR4vlZPCUh4ZPYxA8MSSrfUeqvb2FEcHBwcHBwcHBwcHBwcHBw/peTfLlEUrpERGo7baW2G9pjvcIerU1J1H7DwcHBwcGJ6YiqqopkNUUkq45a1SLSfqZbjs8upyVav+Hg4ODg4PwQZ/q/b6+1o9+qbmBBpKak+mnHFA5NBe43HBwcHByccM7HsUZFRNo7P2s/qkm0/Vz3lWRuzuXUWrR+w8HBwcHBieyc44Px3pf7qEcFNmbIKnJfO4cGIhKv33BwcHBwcCI7Jj5wKx3tkMA0ViCSy1OR/GO7piRev+Hg4ODg4PwEp9olByIyL0n4/eQs9sTFVrJqqx1lbUri9hsODg4ODk5E5x4/OI4BqEk4cBVf1a4lWr/h4ODg4OBEdqb1jWWumhYq2oWPeVnfuGvPtlKi9RsODg4ODk5k5/Q+fzY8KM+do+IQUYzNEtppGdei9RsODg4ODk5kx7/t2+s9LwkH9uWfN2HA+hj7I+Hg4ODg4LzU8esb25JFmTMMxC53bPV9T4T2xL3SMcnYImEq0foNBwcHBwcnstPHD8ZpEXHTDfYoz4MIuslE2M5DROs3HBwcHBycyM46bzByEUfJm1MXBohtwLZM/gEODg4ODs7bHP8Fpn3WwZp3OGp3N7f6zPgBDg4ODg7OGx3/979dK0u4sAQJ0zDBssixPMfEBzg4ODg4OG9z/J/+ZaahLCsdl8Bh3OJiBnmaIj7AwcHBwcF5kbPdzcClF9r7RGTZLGGdfbBbH5B/gIODg4OD8zZnyj/QeY7gOPGgc7rieKLY9sg/wMHBwcHBieDUlPajAZ+t4pi4OGKG8VmnaXfF0P2Gg4ODg4MTzJnmF1yi4XTNpSYuwwSHlplfwMHBwcHBeZ/T90+sSURy8V9jHLsmLkf18t9qtI/lcv/0Eq3fcHBwcHBwIjtmf+X28s/a3+xrBNA2Te7v/REzuFvstsz3zdH6DQcHBwcHJ7LjFyUuKw/ULVQ8zS/k+eapeeYXcHBwcHBw3uvUlESyakpXSzRM6bKJhuNaKyP1oKZkUxNdbBG733BwcHBwcII56/aHLitRl/0P3Eeed0MMrinGD3BwcHBwcF7lnD+v1GrLZqekYp+dljHaVqY4Ilq/4eDg4ODgRHb8/onule+u2UghL9fcwMJonvgABwcHBwfnVc4aH5SnoojssxJ3QULZtG1uidZvODg4ODg4kR3/3rcRgJzWKoyyG0TQeTKC8QMcHBwcHJx3OsmXS2SsZBhlGWL4tKsWWlPXU6ujgZj9hoODg4ODE9Px//zd339bXIbBNLDgKtZ8hmj9hoODg4ODE9kx+ye6zRHl2SO5b6eYRCU/cUO9nvu0P1vTyYnWbzg4ODg4OJGd7f4HbktEl5C4bIxQ2mP7jREy4wc4ODg4ODgvcz6ONe4bCnoPDtTUj+5r1/kTTlOJ1m84ODg4ODiRHf99JldaaCDPh5vEvvxtQNDvk7m2l2j9hoODg4ODE9mZ9k8cJX+ZpPjX6QY3LcH8Ag4ODg4OzquctBs1+PelRus3HBwcHBwcHBwcHBwcHJyf5PwBHUhlhWKjWjIAAAAASUVORK5CYII=" alt="Código QR para entrar a la tienda Doña Loly" width="184" height="184" />
+            <p class="qr-title">Escanea y entra a la tienda</p>
+            <p class="qr-sub">Apunta la cámara del teléfono a este código y se abre la página al momento.</p>
+            <p class="qr-url">tiendadonaloly.github.io/tienda-dona-loly</p>
+            <a class="qr-download" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAzQAAAM0AQAAAABFCVraAAAEr0lEQVR4nO3dQY7dIAyAYVPNntyg9z/W3ABO4C4CwRiYbtqR4vlZPCUh4ZPYxA8MSSrfUeqvb2FEcHBwcHBwcHBwcHBwcHBw/peTfLlEUrpERGo7baW2G9pjvcIerU1J1H7DwcHBwcGJ6YiqqopkNUUkq45a1SLSfqZbjs8upyVav+Hg4ODg4PwQZ/q/b6+1o9+qbmBBpKak+mnHFA5NBe43HBwcHByccM7HsUZFRNo7P2s/qkm0/Vz3lWRuzuXUWrR+w8HBwcHBieyc44Px3pf7qEcFNmbIKnJfO4cGIhKv33BwcHBwcCI7Jj5wKx3tkMA0ViCSy1OR/GO7piRev+Hg4ODg4PwEp9olByIyL0n4/eQs9sTFVrJqqx1lbUri9hsODg4ODk5E5x4/OI4BqEk4cBVf1a4lWr/h4ODg4OBEdqb1jWWumhYq2oWPeVnfuGvPtlKi9RsODg4ODk5k5/Q+fzY8KM+do+IQUYzNEtppGdei9RsODg4ODk5kx7/t2+s9LwkH9uWfN2HA+hj7I+Hg4ODg4LzU8esb25JFmTMMxC53bPV9T4T2xL3SMcnYImEq0foNBwcHBwcnstPHD8ZpEXHTDfYoz4MIuslE2M5DROs3HBwcHBycyM46bzByEUfJm1MXBohtwLZM/gEODg4ODs7bHP8Fpn3WwZp3OGp3N7f6zPgBDg4ODg7OGx3/979dK0u4sAQJ0zDBssixPMfEBzg4ODg4OG9z/J/+ZaahLCsdl8Bh3OJiBnmaIj7AwcHBwcF5kbPdzcClF9r7RGTZLGGdfbBbH5B/gIODg4OD8zZnyj/QeY7gOPGgc7rieKLY9sg/wMHBwcHBieDUlPajAZ+t4pi4OGKG8VmnaXfF0P2Gg4ODg4MTzJnmF1yi4XTNpSYuwwSHlplfwMHBwcHBeZ/T90+sSURy8V9jHLsmLkf18t9qtI/lcv/0Eq3fcHBwcHBwIjtmf+X28s/a3+xrBNA2Te7v/REzuFvstsz3zdH6DQcHBwcHJ7LjFyUuKw/ULVQ8zS/k+eapeeYXcHBwcHBw3uvUlESyakpXSzRM6bKJhuNaKyP1oKZkUxNdbBG733BwcHBwcII56/aHLitRl/0P3Eeed0MMrinGD3BwcHBwcF7lnD+v1GrLZqekYp+dljHaVqY4Ilq/4eDg4ODgRHb8/onule+u2UghL9fcwMJonvgABwcHBwfnVc4aH5SnoojssxJ3QULZtG1uidZvODg4ODg4kR3/3rcRgJzWKoyyG0TQeTKC8QMcHBwcHJx3OsmXS2SsZBhlGWL4tKsWWlPXU6ujgZj9hoODg4ODE9Px//zd339bXIbBNLDgKtZ8hmj9hoODg4ODE9kx+ye6zRHl2SO5b6eYRCU/cUO9nvu0P1vTyYnWbzg4ODg4OJGd7f4HbktEl5C4bIxQ2mP7jREy4wc4ODg4ODgvcz6ONe4bCnoPDtTUj+5r1/kTTlOJ1m84ODg4ODiRHf99JldaaCDPh5vEvvxtQNDvk7m2l2j9hoODg4ODE9mZ9k8cJX+ZpPjX6QY3LcH8Ag4ODg4OzquctBs1+PelRus3HBwcHBwcHBwcHBwcHJyf5PwBHUhlhWKjWjIAAAAASUVORK5CYII=" download="qr-tienda-dona-loly.png">Descargar QR para imprimir</a>
+          </div>
         </div>
         <div class="credit">
           <span>© 2026 Doña Loly</span>
@@ -595,7 +629,7 @@
                 <span class="face"><input type="radio" name="zone" value="Camilo" /> Camilo · 500 CUP</span>
               </label>
               <label class="radio-card">
-                <span class="face"><input type="radio" name="zone" value="Lamar" /> Lamar · 500 CUP</span>
+                <span class="face"><input type="radio" name="zone" value="Alamar" /> Alamar · 500 CUP</span>
               </label>
             </div>
             <label for="fAddress" style="margin-top:12px;">Dirección de entrega *</label>
@@ -635,7 +669,7 @@
     <script>
       var WHATSAPP = "5352783094";
       var ZELLE = "+1 (702) 460-5048";
-      var DELIVERY_ZONES = { "Cojímar": 200, "Bahía": 500, "Camilo": 500, "Lamar": 500 };
+      var DELIVERY_ZONES = { "Cojímar": 200, "Bahía": 500, "Camilo": 500, "Alamar": 500 };
       var ZELLE_FEE = 0.05;
 
       /* ---------- Sonido "din" (Web Audio, sin archivos) ---------- */
@@ -1076,7 +1110,7 @@
         if (!t.count) { showError("Tu carrito está vacío. Añade al menos un producto antes de enviar el pedido."); return; }
         if (!name) { showError("Escribe tu nombre para que la tienda sepa quién hace el pedido."); return; }
         if (!phone) { showError("Escribe tu teléfono para que la tienda pueda contactarte."); return; }
-        if (delivery === "Entrega a domicilio" && !zone) { showError("Elige tu zona de entrega: Cojímar (200 CUP), Bahía (500 CUP), Camilo (500 CUP) o Lamar (500 CUP)."); return; }
+        if (delivery === "Entrega a domicilio" && !zone) { showError("Elige tu zona de entrega: Cojímar (200 CUP), Bahía (500 CUP), Camilo (500 CUP) o Alamar (500 CUP)."); return; }
         if (delivery === "Entrega a domicilio" && !address) { showError("Escribe la dirección de entrega."); return; }
 
         var g = grandTotal(t.total);
