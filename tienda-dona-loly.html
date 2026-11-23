@@ -1,6 +1,30 @@
 <!doctype html>
 <html lang="es">
   <head>
+    <script>
+      const AF_APP_VERSION = '20261123-1';
+      (function () {
+        var controller = ('AbortController' in window) ? new AbortController() : null;
+        var timer = controller ? setTimeout(function () { controller.abort(); }, 3000) : null;
+        var options = { cache: 'no-store' };
+        if (controller) options.signal = controller.signal;
+        fetch('https://tiendadonaloly.github.io/tienda-dona-loly/version.txt', options)
+          .then(function (resp) {
+            if (timer) clearTimeout(timer);
+            if (!resp.ok) return null;
+            return resp.text();
+          })
+          .then(function (text) {
+            if (text === null || text === undefined) return;
+            if (text.trim() !== AF_APP_VERSION) {
+              window.location.replace('https://tiendadonaloly.github.io/tienda-dona-loly/tienda-dona-loly.html');
+            }
+          })
+          .catch(function () {
+            if (timer) clearTimeout(timer);
+          });
+      })();
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
