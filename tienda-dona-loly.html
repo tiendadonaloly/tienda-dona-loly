@@ -1452,6 +1452,17 @@
       })();
 
       renderCart();
+
+      /* ---------- Service worker: última versión guardada sin internet ---------- */
+      if ("serviceWorker" in navigator) {
+        try {
+          var registerSW = function () {
+            try { navigator.serviceWorker.register("sw.js").catch(function () {}); } catch (e) {}
+          };
+          if (document.readyState === "complete") registerSW();
+          else window.addEventListener("load", registerSW);
+        } catch (e) {}
+      }
     </script>
   </body>
 </html>
