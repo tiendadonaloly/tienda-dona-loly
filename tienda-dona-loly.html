@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <script>
-      const AF_APP_VERSION = '20261123-3';
+      const AF_APP_VERSION = '20261123-4';
       (function () {
         var controller = ('AbortController' in window) ? new AbortController() : null;
         var timer = controller ? setTimeout(function () { controller.abort(); }, 3000) : null;
@@ -1490,6 +1490,38 @@
           else window.addEventListener("load", registerSW);
         } catch (e) {}
       }
+    </script>
+    <script>
+      /* Contador invisible de visitas (Supabase) — una por persona y día, hora de La Habana */
+      (function () {
+        try {
+          var KEY = "af_tienda_visita_dia";
+          var hoy = "";
+          try {
+            hoy = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Havana", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+          } catch (e) {
+            var d = new Date();
+            hoy = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+          }
+          var ultimo = null;
+          try { ultimo = localStorage.getItem(KEY); } catch (e) {}
+          if (ultimo === hoy) return;
+          fetch("https://klziezlbckaibcskvdko.supabase.co/rest/v1/visitas", {
+            method: "POST",
+            headers: {
+              "apikey": "sb_publishable_m4UuJW4VUr4u2PQS0t2Yaw_wfK-qYZi",
+              "Authorization": "Bearer sb_publishable_m4UuJW4VUr4u2PQS0t2Yaw_wfK-qYZi",
+              "Content-Type": "application/json",
+              "Prefer": "return=minimal"
+            },
+            body: JSON.stringify({ pagina: "tienda" })
+          }).then(function (r) {
+            if (r && r.ok) {
+              try { localStorage.setItem(KEY, hoy); } catch (e) {}
+            }
+          }).catch(function () {});
+        } catch (e) {}
+      })();
     </script>
   </body>
 </html>
