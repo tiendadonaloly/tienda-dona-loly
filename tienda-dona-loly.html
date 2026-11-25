@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <script>
-      const AF_APP_VERSION = '20261123-1';
+      const AF_APP_VERSION = '20261123-2';
       (function () {
         var controller = ('AbortController' in window) ? new AbortController() : null;
         var timer = controller ? setTimeout(function () { controller.abort(); }, 3000) : null;
@@ -17,6 +17,10 @@
           .then(function (text) {
             if (text === null || text === undefined) return;
             if (text.trim() !== AF_APP_VERSION) {
+              try {
+                if (sessionStorage.getItem('af_ver_redirect')) return;
+                sessionStorage.setItem('af_ver_redirect', '1');
+              } catch (e) {}
               window.location.replace('https://tiendadonaloly.github.io/tienda-dona-loly/tienda-dona-loly.html');
             }
           })
